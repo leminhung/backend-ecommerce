@@ -3,9 +3,8 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const colors = require("colors");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/error");
-
-const authRoutes = require("./routes/auth");
 
 // Load env vars
 dotenv.config({ path: "./config/.env" });
@@ -14,6 +13,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const connectDB = require("./config/db");
+
+// Cookie parser
+app.use(cookieParser());
 
 // Body parser
 app.use(bodyParser.json());
@@ -27,13 +29,20 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.get("/", (req, res, next) => {
-  res.send("hello");
+  res.json({ cart: req.cookies });
 });
 
-app.use("/api/v1/auth", authRoutes);
+// Import router
+const router = require("./routes");
+
+// app.use("/api/v1/auth", authRoutes);
+// app.use("/api/v1/products", productRoutes);
+// app.use("/api/v1/cart", cartRoutes);
 
 // Error handlers
 app.use(errorHandler);
+
+router(app);
 
 const server = app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`.yellow.bold);
