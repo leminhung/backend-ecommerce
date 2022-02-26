@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const Order = require("../models/Order");
-const Product = require("../models/Product");
+const Order = require("../models/Order.model");
+const Product = require("../models/Product.model");
 const ErrorResponse = require("../utils/ErrorResponse");
 const asyncHandler = require("../middleware/async");
 

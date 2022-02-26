@@ -7,9 +7,9 @@ const {
   createProduct,
   deleteProduct,
   updateProduct,
-} = require("../controllers/product");
+} = require("../controllers/product.controller");
 
-const Product = require("../models/Product");
+const Product = require("../models/Product.model");
 
 const advancedResults = require("../middleware/advancedResults");
 const { protect, authorize } = require("../middleware/auth");

@@ -9,7 +9,7 @@ const {
   updateDetails,
   getMe,
   getToken,
-} = require("../controllers/auth");
+} = require("../controllers/auth.controller");
 const { protect, verifyRefreshToken } = require("../middleware/auth");
 const { apiEnum } = require("../enum/api.enum");
 

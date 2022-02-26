@@ -18,7 +18,7 @@ const productSchema = mongoose.Schema({
   },
   slug: String,
   description: String,
-  discount: { type: Number, min: [0, "Discount must be at least 1000"] },
+  discount: { type: Number, min: [0, "Discount must be at least 0"] },
   cart: {
     type: mongoose.Schema.ObjectId,
     ref: "Cart",
@@ -27,6 +27,10 @@ const productSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Category",
     required: true,
+  },
+  order: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Order",
   },
 });
 

@@ -20,7 +20,15 @@ exports.apiEnum = {
   API_UPDATE_PRODUCT: "/products/:productId",
   API_CREATE_PRODUCT: "/products/add-product",
 
-  API_DELETE_SKILL: "/auth/delete-skill",
+  API_ORDER_GET_PRODUCTS: "/order/products",
+  API_CREATE_ORDER: "/order/create",
+  API_UPDATE_ORDER: "/order/:orderId",
+  API_GET_ORDER: "/order/:orderId",
+  API_GET_ORDERS: "/order",
+  API_DELETE_ORDER: "/order/:orderId",
+
+  API_ORDER_GET_DETAILS: "/order-detail",
+
   API_GET_SUBJECT: "/subjects",
   API_GET_SKILL: "/skills",
   API_GET_DOWNLOAD: "/download",

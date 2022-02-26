@@ -28,4 +28,5 @@ exports.msgEnum = {
   INVALID_PASSWORD: "Vui lòng nhập mật khẩu mới",
   INVALID_OLD_PASSWORD: "Vui lòng nhập mật khẩu cũ",
   UNAUTHORIZED: "Không được phép để truy cập route này",
+  PRODUCT_NOT_FOUND: "Không có sản phẩm",
 };

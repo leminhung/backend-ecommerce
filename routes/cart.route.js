@@ -5,7 +5,7 @@ const {
   addProductToCart,
   postCartDeleteProduct,
   postCartReduceProductByOne,
-} = require("../controllers/cart");
+} = require("../controllers/cart.controller");
 const { apiEnum } = require("../enum/api.enum");
 
 // user add/delete product into/from cart

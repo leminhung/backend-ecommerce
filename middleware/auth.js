@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../models/User.model");
 const asyncHandler = require("./async");
 const ErrorResponse = require("../utils/ErrorResponse");
 const { msgEnum } = require("../enum/message.enum");
@@ -18,7 +18,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   // Make sure token exists
   if (!token) {
-    return next(new ErrorResponse(message.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
+    return next(new ErrorResponse(msgEnum.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
   }
 
   try {
@@ -27,7 +27,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error.message);
-    return next(new ErrorResponse(message.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
+    return next(new ErrorResponse(msgEnum.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
   }
 });
 
@@ -73,6 +73,6 @@ exports.verifyRefreshToken = asyncHandler(async (req, res, next) => {
     next();
   } catch (err) {
     console.log(err.message);
-    return next(new ErrorResponse(message.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
+    return next(new ErrorResponse(msgEnum.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
   }
 });

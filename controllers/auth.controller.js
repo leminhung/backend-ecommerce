@@ -1,8 +1,12 @@
 const crypto = require("crypto");
-const User = require("../models/User");
+
+const User = require("../models/User.model");
+
 const asyncHandler = require("../middleware/async");
+
 const ErrorResponse = require("../utils/ErrorResponse");
 const sendMail = require("../utils/sendMail");
+
 const { codeEnum } = require("../enum/status-code.enum");
 const { msgEnum } = require("../enum/message.enum");
 
@@ -24,18 +28,18 @@ exports.register = asyncHandler(async (req, res, next) => {
 exports.signIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return next(new ErrorResponse(USER_NOT_FOUND, codeEnum.NOT_FOUND));
+    return next(new ErrorResponse(msgEnum.USER_NOT_FOUND, codeEnum.NOT_FOUND));
   }
 
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return next(new ErrorResponse(msg.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
+    return next(new ErrorResponse(msgEnum.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
   }
 
   const checkMatch = await user.isMatchPassword(password);
   if (!checkMatch) {
-    return next(new ErrorResponse(msg.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
+    return next(new ErrorResponse(msgEnum.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
   }
 
   const token = user.signToken();
@@ -55,7 +59,7 @@ exports.forgot = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return next(new ErrorResponse(msg.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
+    return next(new ErrorResponse(msgEnum.UNAUTHORIZED, codeEnum.UNAUTHORIZED));
   }
 
   //  Get reset token
@@ -129,7 +133,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   });
   console.log(resetPasswordToken);
   if (!user) {
-    return next(new ErrorResponse(msg.TOKEN_INVALID, 400));
+    return next(new ErrorResponse(msgEnum.TOKEN_INVALID, 400));
   }
 
   // Set new password
