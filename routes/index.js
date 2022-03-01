@@ -3,6 +3,8 @@ const productRouter = require("./product.route");
 const cartRouter = require("./cart.route");
 const orderRouter = require("./order.route");
 const orderDetailRouter = require("./orderDetail.route");
+const categoryRouter = require("./category.route");
+const imageRouter = require("./image.route");
 
 const routers = [
   authRouter,
@@ -10,6 +12,8 @@ const routers = [
   cartRouter,
   orderRouter,
   orderDetailRouter,
+  categoryRouter,
+  imageRouter,
 ];
 
 module.exports = (app) => {

@@ -3,6 +3,7 @@ const asyncHandler = require("../middleware/async");
 
 const Product = require("../models/Product.model");
 const Order = require("../models/Order.model");
+const { codeEnum } = require("../enum/status-code.enum");
 
 // @desc      Get products from cart (use cookie when not loggined user)
 // @route     GET /api/v1/order
@@ -13,10 +14,9 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
 
   Product.find({ _id: { $in: productIds } }, function (err, result) {
     if (err) {
-      return next(new ErrorResponse(err.message, 404));
-    } else {
-      res.status(200).json({ data: result || [] });
+      return next(new ErrorResponse(err.message, codeEnum.NOT_FOUND));
     }
+    res.status(codeEnum.SUCCESS).json({ data: result || [] });
   });
 });
 
@@ -25,7 +25,7 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.createOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.create(req.body);
-  res.status(200).json({ data: order });
+  res.status(codeEnum.CREATED).json({ data: order });
 });
 
 // @desc      Update order
@@ -35,7 +35,7 @@ exports.updateOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findByIdAndUpdate(req.params.orderId, req.body, {
     new: true,
   });
-  res.status(200).json({ data: order });
+  res.status(codeEnum.SUCCESS).json({ data: order });
 });
 
 // @desc      Get order
@@ -43,7 +43,7 @@ exports.updateOrder = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.getOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.orderId);
-  res.status(200).json({ data: order });
+  res.status(codeEnum.SUCCESS).json({ data: order });
 });
 
 // @desc      Get orders
@@ -51,7 +51,7 @@ exports.getOrder = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.getOrders = asyncHandler(async (req, res, next) => {
   const orders = await Order.find();
-  res.status(200).json({ data: orders });
+  res.status(codeEnum.SUCCESS).json({ data: orders });
 });
 
 // @desc      Delete order
@@ -59,5 +59,5 @@ exports.getOrders = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.deleteOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findByIdAndDelete(req.params.orderId);
-  res.status(200).json({ data: {} });
+  res.status(codeEnum.SUCCESS).json({ data: {} });
 });

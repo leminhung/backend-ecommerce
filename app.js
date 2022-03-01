@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const colors = require("colors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const fileupload = require("express-fileupload");
 const errorHandler = require("./middleware/error");
 
 // Load env vars
@@ -20,6 +21,9 @@ app.use(cookieParser());
 // Body parser
 app.use(bodyParser.json());
 
+// File uploading
+app.use(fileupload({ useTempFiles: true }));
+
 // connect to DB
 connectDB();
 
@@ -34,10 +38,6 @@ app.get("/", (req, res, next) => {
 
 // Import router
 const router = require("./routes");
-
-// app.use("/api/v1/auth", authRoutes);
-// app.use("/api/v1/products", productRoutes);
-// app.use("/api/v1/cart", cartRoutes);
 
 // Error handlers
 app.use(errorHandler);

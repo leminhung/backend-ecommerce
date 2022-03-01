@@ -1,14 +1,19 @@
-const mongoose = require("mongoose");
-const Order = require("../models/Order.model");
 const Product = require("../models/Product.model");
+const Image = require("../models/Image.model");
+
 const ErrorResponse = require("../utils/ErrorResponse");
 const asyncHandler = require("../middleware/async");
 
-// @desc      Get all product
+const { codeEnum } = require("../enum/status-code.enum");
+const { msgEnum } = require("../enum/message.enum");
+
+const cloudinary = require("../utils/cloudinaryConfig");
+
+// @desc      Get all products
 // @route     GET /api/v1/products
 // @access    Public
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedResults);
+  res.status(codeEnum.SUCCESS).json(res.advancedResults);
 });
 
 // @desc      Get product
@@ -17,14 +22,9 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 exports.getProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findById({ _id: req.params.productId });
   if (!product) {
-    return next(
-      new ErrorResponse(
-        `Product not found with id of ${req.params.productId}`,
-        404
-      )
-    );
+    return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
-  res.status(200).json({ success: true, data: product });
+  res.status(codeEnum.SUCCESS).json({ data: product });
 });
 
 // @desc      Add product
@@ -35,7 +35,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 
   const product = await Product.create({ name, price });
 
-  res.status(201).json({ success: true, data: product });
+  res.status(codeEnum.CREATED).json({ data: product });
 });
 
 // @desc      Delete product
@@ -44,17 +44,11 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 exports.deleteProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
   if (!product) {
-    return next(
-      new ErrorResponse(
-        `Product not found with id of ${req.params.productId}`,
-        404
-      )
-    );
+    return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
 
-  await Product.findByIdAndDelete(req.params.productId);
-
-  res.status(201).json({ success: true, data: product });
+  product.remove();
+  res.status(code.SUCCESS).json({ data: {} });
 });
 
 // @desc      Update product
@@ -63,12 +57,7 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 exports.updateProduct = asyncHandler(async (req, res, next) => {
   let product = await Product.findById(req.params.productId);
   if (!product) {
-    return next(
-      new ErrorResponse(
-        `Product not found with id of ${req.params.productId}`,
-        404
-      )
-    );
+    return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
 
   product = await Product.findByIdAndUpdate(req.params.productId, req.body, {
@@ -76,8 +65,45 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
     runValidators: true,
   });
 
-  res.status(200).json({
-    success: true,
+  res.status(codeEnum.SUCCESS).json({
     data: product,
+  });
+});
+
+// @desc      Upload photo for product
+// @route     PUT /api/v1/products/:productId/photo
+// @access    Private
+exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
+  const product = await Product.findById(req.params.productId);
+  if (!product) {
+    return next(new ErrorResponse(msgEnum.DATA_NOT_FOUND, codeEnum.NOT_FOUND));
+  }
+
+  if (!req.files) {
+    return next(new ErrorResponse(msgEnum.UPLOAD_FAIL, codeEnum.BAD_REQUEST));
+  }
+
+  const file = req.files.photo;
+
+  // make sure the image is a photo
+  if (!file.mimetype.startsWith("image")) {
+    return next(
+      new ErrorResponse(msgEnum.WRONG_FILE_TYPE, codeEnum.BAD_REQUEST)
+    );
+  }
+
+  // Check filesize
+  if (file.size > process.env.MAX_FILE_UPLOAD) {
+    return next(
+      new ErrorResponse(msgEnum.FILE_SIZE_OVER, codeEnum.BAD_REQUEST)
+    );
+  }
+
+  cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
+    await Image.create({
+      imagePath: result.url,
+      product: req.params.productId,
+    });
+    res.status(codeEnum.SUCCESS).json({ msg: msgEnum.UPLOAD_SUCCESS });
   });
 });

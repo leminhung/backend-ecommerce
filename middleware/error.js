@@ -15,7 +15,7 @@ const errorHandler = (err, req, res, next) => {
     const message = Object.values(err.errors).map(
       (value) => value.message + " "
     );
-    error = new ErrorResponse(message, 404);
+    error = new ErrorResponse(message, codeEnum.NOT_FOUND);
   }
 
   // MongoDB bad ObjectID

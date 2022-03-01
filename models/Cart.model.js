@@ -41,43 +41,6 @@ CartSchema.virtual("productss", {
   justOne: false,
 });
 
-// add product to cart
-CartSchema.methods.addToCart = async function (options) {
-  const { price, products } = options;
-  let productsUpdate = [...products];
-  // let existingProduct = this.products.findIndex(
-  //   (prod) => prod.productId.toString() === productId.toString()
-  // );
-  // let newQuantity = 1;
-  // let productsUpdate = [...this.products];
-  // if (existingProduct >= 0) {
-  //   newQuantity = this.products[existingProduct].quantity + 1;
-  //   productsUpdate[existingProduct].quantity = newQuantity;
-  // } else {
-  //   productsUpdate.push({
-  //     productId,
-  //     quantity: newQuantity,
-  //   });
-  // }
-  this.total_quantity = this.total_quantity + 1;
-  this.total_price = this.total_price + price;
-  this.products = productsUpdate;
-  return this.save();
-};
-
-CartSchema.methods.deleteItemFromCart = async function (product) {
-  const { productId, price } = product;
-  const productExisting = await this.products.find(
-    (p) => p.productId.toString() === productId.toString()
-  );
-  const updatedCart = this.products.filter(
-    (prod) => prod.productId.toString() !== productId.toString()
-  );
-  this.products = updatedCart;
-  this.total_quantity = this.total_quantity - productExisting.quantity;
-  this.total_price = this.total_price - price * productExisting.quantity;
-  return this.save();
-};
 const Cart = mongoose.model("Cart", CartSchema);
 
 module.exports = Cart;

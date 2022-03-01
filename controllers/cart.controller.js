@@ -1,5 +1,9 @@
 const ErrorResponse = require("../utils/ErrorResponse");
 const asyncHandler = require("../middleware/async");
+
+const { codeEnum } = require("../enum/status-code.enum");
+const { msgEnum } = require("../enum/message.enum");
+
 const {
   raiseQuantityByOne,
   reduceQuantityByOne,
@@ -10,7 +14,7 @@ const {
 // @route     GET /api/v1/cart
 // @access    Public
 exports.getCart = asyncHandler(async (req, res, next) => {
-  res.status(200).json({ success: true, data: req.cookies.PRODUCT_CART || [] });
+  res.status(codeEnum.SUCCESS).json({ data: req.cookies.PRODUCT_CART || [] });
 });
 
 // @desc      Add product to cart (use cookie when not loggined user)
@@ -18,22 +22,32 @@ exports.getCart = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.addProductToCart = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
-  console.log(req.cookies.PRODUCT_CART);
+  const { price } = req.body;
+
   try {
-    let newProducts = [];
+    let newProducts = {};
+
     if (!req.cookies.PRODUCT_CART) {
-      newProducts.push({ productId, quantity: 1 });
+      newProducts = {
+        products: [{ productId, quantity: 1 }],
+        total: price,
+      };
     } else
       newProducts = await raiseQuantityByOne(
         req.cookies.PRODUCT_CART,
-        productId
+        productId,
+        price
       );
-    res.status(200).cookie(process.env.PRODUCT_CART, newProducts).json({
-      success: true,
-      data: newProducts,
-    });
+
+    res
+      .status(codeEnum.SUCCESS)
+      .cookie(process.env.PRODUCT_CART, newProducts)
+      .json({
+        success: true,
+        data: newProducts,
+      });
   } catch (err) {
-    return next(new ErrorResponse(err.message, 500));
+    return next(new ErrorResponse(err.message, codeEnum.SERVER_ERROR));
   }
 });
 
@@ -42,18 +56,26 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.postCartDeleteProduct = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
+  const { price } = req.body;
+
   try {
     let updatedCart;
     if (!req.cookies.PRODUCT_CART) {
-      return next(new ErrorResponse("Not found products", 404));
+      return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
     }
-    updatedCart = await removeOneProduct(req.cookies.PRODUCT_CART, productId);
+
+    updatedCart = await removeOneProduct(
+      req.cookies.PRODUCT_CART,
+      productId,
+      price
+    );
+
     res
-      .status(200)
+      .status(codeEnum.SUCCESS)
       .cookie(process.env.PRODUCT_CART, updatedCart)
-      .json({ success: true, data: updatedCart });
+      .json({ data: updatedCart });
   } catch (err) {
-    return next(new ErrorResponse(err.message, 500));
+    return next(new ErrorResponse(err.message, codeEnum.SERVER_ERROR));
   }
 });
 
@@ -62,20 +84,25 @@ exports.postCartDeleteProduct = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.postCartReduceProductByOne = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
+  const { price } = req.body;
+
   try {
     let updatedCart;
     if (!req.cookies.PRODUCT_CART) {
-      return next(new ErrorResponse("Not found products", 404));
+      return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
     }
+
     updatedCart = await reduceQuantityByOne(
       req.cookies.PRODUCT_CART,
-      productId
+      productId,
+      price
     );
+
     res
-      .status(200)
+      .status(codeEnum.SUCCESS)
       .cookie(process.env.PRODUCT_CART, updatedCart)
-      .json({ success: true, data: updatedCart });
+      .json({ data: updatedCart });
   } catch (err) {
-    return next(new ErrorResponse(err.message, 500));
+    return next(new ErrorResponse(err.message, codeEnum.SERVER_ERROR));
   }
 });
