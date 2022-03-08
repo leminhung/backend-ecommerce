@@ -36,4 +36,8 @@ exports.apiEnum = {
   API_GET_IMAGE: "/images/:imageId",
   API_DELETE_IMAGE: "/images/:imageId",
   API_UPDATE_IMAGE: "/images/:imageId",
+  API_GET_COMMENTS_FOR_PRODUCT: "/comments/products/:productId",
+  API_POST_COMMENT: "/comments",
+  API_DELETE_COMMENT: "/comments/:commentId",
+  API_UPDATE_COMMENT: "/comments/:commentId",
 };

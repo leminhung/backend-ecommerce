@@ -57,4 +57,11 @@ productSchema.virtual("images", {
   justOne: false,
 });
 
+productSchema.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "product",
+  justOne: false,
+});
+
 module.exports = mongoose.model("Product", productSchema);

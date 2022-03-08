@@ -33,7 +33,7 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 exports.createCategory = asyncHandler(async (req, res, next) => {
   const { title } = req.body;
 
-  const category = await Category.create({ title });
+  const category = await Category.create({ title, subtitle: "test.com" });
 
   res.status(codeEnum.CREATED).json({ data: category });
 });
@@ -78,6 +78,13 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/categories/:categoryId/products
 // @access    Public
 exports.getProductsForCategory = asyncHandler(async (req, res, next) => {
-  const products = await Product.find({ category: req.params.categoryId });
+  const products = await Product.find({
+    category: req.params.categoryId,
+  }).populate("comments");
+
+  if (!products) {
+    return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
+  }
+
   res.status(codeEnum.SUCCESS).json({ data: products });
 });

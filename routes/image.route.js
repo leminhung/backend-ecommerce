@@ -14,12 +14,21 @@ const { protect, authorize } = require("../middleware/auth");
 
 const { apiEnum } = require("../enum/api.enum");
 
-router.use(protect, authorize("admin"));
-
-router.get(apiEnum.API_GET_IMAGES, advancedResults(Image, ""), getAllImages);
+router.get(
+  apiEnum.API_GET_IMAGES,
+  protect,
+  authorize("admin"),
+  advancedResults(Image, ""),
+  getAllImages
+);
 
 router.get(apiEnum.API_GET_IMAGE, getImage);
 
-router.delete(apiEnum.API_DELETE_IMAGE, deleteImage);
+router.delete(
+  apiEnum.API_DELETE_IMAGE,
+  protect,
+  authorize("admin"),
+  deleteImage
+);
 
 module.exports = router;

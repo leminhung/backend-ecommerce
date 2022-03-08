@@ -19,21 +19,40 @@ const { apiEnum } = require("../enum/api.enum");
 
 router.get(apiEnum.API_GET_PRODUCT, getProduct);
 
-// protect all routes below
-router.use(protect, authorize("admin"));
-
 router.get(
   apiEnum.API_GET_PRODUCTS,
+  protect,
+  authorize("admin"),
   advancedResults(Product, { path: "images", select: "imagePath" }),
   getAllProducts
 );
 
-router.post(apiEnum.API_CREATE_PRODUCT, createProduct);
+router.post(
+  apiEnum.API_CREATE_PRODUCT,
+  protect,
+  authorize("admin"),
+  createProduct
+);
 
-router.delete(apiEnum.API_DELETE_PRODUCT, deleteProduct);
+router.delete(
+  apiEnum.API_DELETE_PRODUCT,
+  protect,
+  authorize("admin"),
+  deleteProduct
+);
 
-router.put(apiEnum.API_UPDATE_PRODUCT, updateProduct);
+router.put(
+  apiEnum.API_UPDATE_PRODUCT,
+  protect,
+  authorize("admin"),
+  updateProduct
+);
 
-router.put(apiEnum.API_UPLOAD_PRODUCT_PHOTO, productPhotoUpload);
+router.put(
+  apiEnum.API_UPLOAD_PRODUCT_PHOTO,
+  protect,
+  authorize("admin"),
+  productPhotoUpload
+);
 
 module.exports = router;

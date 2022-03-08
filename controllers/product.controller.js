@@ -31,9 +31,7 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/products
 // @access    Private/Admin
 exports.createProduct = asyncHandler(async (req, res, next) => {
-  const { name, price } = req.body;
-
-  const product = await Product.create({ name, price });
+  const product = await Product.create(req.body);
 
   res.status(codeEnum.CREATED).json({ data: product });
 });
