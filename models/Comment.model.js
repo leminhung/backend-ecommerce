@@ -26,4 +26,10 @@ const commentSchema = mongoose.Schema(
   }
 );
 
+// use in case delete category
+// commentSchema.pre("deleteMany", async function (next) {
+//   await this.model("Image").deleteMany({ product: this._id });
+//   next();
+// });
+
 module.exports = mongoose.model("Comment", commentSchema);

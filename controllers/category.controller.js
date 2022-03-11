@@ -8,6 +8,8 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const { codeEnum } = require("../enum/status-code.enum");
 const { msgEnum } = require("../enum/message.enum");
 
+const cloudinary = require("../utils/cloudinaryConfig");
+
 // @desc      Get all categories
 // @route     GET /api/v1/categories
 // @access    Private(Admin)
@@ -48,9 +50,9 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
 
-  await Category.findByIdAndDelete(req.params.categoryId);
+  await category.remove();
 
-  res.status(201).json({ data: category });
+  res.status(codeEnum.SUCCESS).json({ data: {} });
 });
 
 // @desc      Update category
@@ -87,4 +89,43 @@ exports.getProductsForCategory = asyncHandler(async (req, res, next) => {
   }
 
   res.status(codeEnum.SUCCESS).json({ data: products });
+});
+
+// @desc      Upload photo for category
+// @route     PUT /api/v1/categories/:categoryId/photo
+// @access    Private(Admin)
+exports.categoryPhotoUpload = asyncHandler(async (req, res, next) => {
+  let category = await Category.findById(req.params.categoryId);
+  if (!category) {
+    return next(new ErrorResponse(msgEnum.DATA_NOT_FOUND, codeEnum.NOT_FOUND));
+  }
+
+  if (!req.files) {
+    return next(new ErrorResponse(msgEnum.UPLOAD_FAIL, codeEnum.BAD_REQUEST));
+  }
+
+  const file = req.files.photo;
+
+  if (!file.mimetype.startsWith("image")) {
+    return next(
+      new ErrorResponse(msgEnum.WRONG_FILE_TYPE, codeEnum.BAD_REQUEST)
+    );
+  }
+
+  if (file.size > process.env.MAX_FILE_UPLOAD) {
+    return next(
+      new ErrorResponse(msgEnum.FILE_SIZE_OVER, codeEnum.BAD_REQUEST)
+    );
+  }
+
+  cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
+    category = await Category.findByIdAndUpdate(
+      req.params.categoryId,
+      {
+        thumbnail: result.url,
+      },
+      { new: true }
+    );
+    res.status(codeEnum.SUCCESS).json({ msg: msgEnum.UPLOAD_SUCCESS });
+  });
 });

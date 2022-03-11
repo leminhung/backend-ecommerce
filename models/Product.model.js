@@ -36,20 +36,16 @@ const productSchema = mongoose.Schema(
   }
 );
 
-// Create product slug from the title
 productSchema.pre("save", function (next) {
   this.slug = slugify(this.title, { lower: true });
   next();
 });
 
-// Cascade delete images when a product id deleted
 productSchema.pre("remove", async function (next) {
-  console.log(`Courses being removed from product: ${this._id}`);
   await this.model("Image").deleteMany({ product: this._id });
   next();
 });
 
-// Reverse populate with virtuals
 productSchema.virtual("images", {
   ref: "Image",
   localField: "_id",

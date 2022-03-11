@@ -1,19 +1,29 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
-const opts = { toJSON: { virtuals: true } };
-
 const categorySchema = mongoose.Schema(
   {
     title: { type: String, required: true },
     slug: String,
+    description: {
+      type: String,
+      required: [true, "Bạn chưa nhập mô tả."],
+    },
+    thumbnail: {
+      type: String,
+      default: "thumbnail.jpg",
+    },
   },
-  opts
+  { toJSON: { virtuals: true } }
 );
 
-// Create category slug from the title
 categorySchema.pre("save", function (next) {
   this.slug = slugify(this.title, { lower: true });
+  next();
+});
+
+categorySchema.pre("remove", async function (next) {
+  await this.model("Product").deleteMany({ category: this._id });
   next();
 });
 
