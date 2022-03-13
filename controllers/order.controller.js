@@ -26,7 +26,6 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
   });
 });
 
-// =================TRY TO FIX CREATE ORDER
 // @desc      Create order
 // @route     POST /api/v1/order/create
 // @access    Public

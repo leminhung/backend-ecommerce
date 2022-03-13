@@ -82,6 +82,7 @@ UserSchema.methods.signRefreshToken = async function () {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
     }
   );
+
   await client.set(this._id.toString(), refreshToken);
   return refreshToken;
 };
