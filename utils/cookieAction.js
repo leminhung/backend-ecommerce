@@ -2,6 +2,7 @@ exports.raiseQuantityByOne = async (cart, id, price) => {
   let existingProduct = cart.products.findIndex(
     (prod) => prod.productId.toString() === id.toString()
   );
+
   let newQuantity = 1;
   let productsUpdate = [...cart.products];
 
@@ -13,8 +14,10 @@ exports.raiseQuantityByOne = async (cart, id, price) => {
       productId: id,
       quantity: newQuantity,
     });
+
   cart.products = productsUpdate;
   cart.total = cart.total + price;
+
   return cart;
 };
 
@@ -22,6 +25,7 @@ exports.reduceQuantityByOne = async (cart, id, price) => {
   let existingProduct = cart.products.findIndex(
     (prod) => prod.productId.toString() === id.toString()
   );
+
   let newQuantity;
   let productsUpdate = [...cart.products];
 
@@ -31,6 +35,7 @@ exports.reduceQuantityByOne = async (cart, id, price) => {
     cart.products = productsUpdate;
     cart.total = cart.total - price;
   }
+
   return cart;
 };
 
@@ -46,5 +51,6 @@ exports.removeOneProduct = async (cart, id, price) => {
   );
   cart.products = productsUpdate;
   cart.total = cart.total - price * product.quantity;
+
   return cart;
 };

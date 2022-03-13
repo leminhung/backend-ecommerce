@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
-const productSchema = mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     price: {
@@ -43,6 +43,7 @@ productSchema.pre("save", function (next) {
 
 productSchema.pre("remove", async function (next) {
   await this.model("Image").deleteMany({ product: this._id });
+  await this.model("Comment").deleteMany({ product: this._id });
   next();
 });
 

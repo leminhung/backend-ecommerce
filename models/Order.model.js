@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const orderSchema = mongoose.Schema({
+const orderSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -14,6 +14,10 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+
+  // Trong giỏ: false
+  // Đã đặt: true
+  status: { type: Boolean, required: true, default: false },
   note: {
     type: String,
   },
@@ -25,6 +29,11 @@ const orderSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+});
+
+orderSchema.pre("save", async function (next) {
+  this.status = true;
+  next();
 });
 
 const Order = mongoose.model("Order", orderSchema);

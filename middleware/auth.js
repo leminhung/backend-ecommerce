@@ -43,13 +43,16 @@ exports.authorize = (...roles) => {
 
 exports.verifyRefreshToken = asyncHandler(async (req, res, next) => {
   const { refreshToken } = req.body;
+
   if (!refreshToken)
     return next(new ErrorResponse(msgEnum.TOKEN_INVALID, codeEnum.BAD_REQUEST));
+
   try {
     const decoded = await jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
+
     const redisToken = await client.get(decoded.id);
 
     if (!redisToken)

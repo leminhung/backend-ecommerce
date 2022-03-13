@@ -63,7 +63,6 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     (pagination.prev = { page: page - 1 }), limit;
   }
   res.advancedResults = {
-    success: true,
     total,
     count: results.length,
     pagination,

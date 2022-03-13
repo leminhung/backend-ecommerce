@@ -23,7 +23,7 @@ router.get(
   apiEnum.API_GET_PRODUCTS,
   protect,
   authorize("admin"),
-  advancedResults(Product, { path: "images", select: "imagePath" }),
+  advancedResults(Product, { path: "images", select: "path" }),
   getAllProducts
 );
 

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const CartSchema = mongoose.Schema(
+const CartSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -33,7 +33,6 @@ const CartSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-// Reverse populate with virtuals
 CartSchema.virtual("productss", {
   ref: "Product",
   localField: "_id",

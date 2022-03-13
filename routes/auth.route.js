@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express();
+
 const {
   register,
   signIn,
@@ -10,7 +11,9 @@ const {
   getMe,
   getToken,
 } = require("../controllers/auth.controller");
+
 const { protect, verifyRefreshToken } = require("../middleware/auth");
+
 const { apiEnum } = require("../enum/api.enum");
 
 router

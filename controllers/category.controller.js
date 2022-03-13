@@ -4,11 +4,10 @@ const Product = require("../models/Product.model");
 const asyncHandler = require("../middleware/async");
 
 const ErrorResponse = require("../utils/ErrorResponse");
+const cloudinary = require("../utils/cloudinaryConfig");
 
 const { codeEnum } = require("../enum/status-code.enum");
 const { msgEnum } = require("../enum/message.enum");
-
-const cloudinary = require("../utils/cloudinaryConfig");
 
 // @desc      Get all categories
 // @route     GET /api/v1/categories
@@ -21,11 +20,12 @@ exports.getAllCategories = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/categories/:categoryId
 // @access    Private(Admin)
 exports.getCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.findById({ _id: req.params.categoryId });
+  const category = await Category.findOne({ _id: req.params.categoryId });
 
   if (!category) {
     return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
+
   res.status(codeEnum.SUCCESS).json({ data: category });
 });
 
@@ -33,10 +33,7 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/categories
 // @access    Private(Admin)
 exports.createCategory = asyncHandler(async (req, res, next) => {
-  const { title } = req.body;
-
-  const category = await Category.create({ title, subtitle: "test.com" });
-
+  const category = await Category.create(req.body);
   res.status(codeEnum.CREATED).json({ data: category });
 });
 
@@ -71,7 +68,6 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
   });
 
   res.status(codeEnum.SUCCESS).json({
-    success: true,
     data: category,
   });
 });
@@ -96,6 +92,7 @@ exports.getProductsForCategory = asyncHandler(async (req, res, next) => {
 // @access    Private(Admin)
 exports.categoryPhotoUpload = asyncHandler(async (req, res, next) => {
   let category = await Category.findById(req.params.categoryId);
+
   if (!category) {
     return next(new ErrorResponse(msgEnum.DATA_NOT_FOUND, codeEnum.NOT_FOUND));
   }

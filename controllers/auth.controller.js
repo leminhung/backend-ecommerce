@@ -19,6 +19,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   const user = await User.create({ name, email, password, role });
 
   const token = user.signToken();
+
   res.status(codeEnum.SUCCESS).json({ token });
 });
 
@@ -44,6 +45,7 @@ exports.signIn = asyncHandler(async (req, res, next) => {
 
   const token = user.signToken();
   const refreshToken = await user.signRefreshToken();
+
   res.status(codeEnum.SUCCESS).json({ token, refreshToken });
 });
 
@@ -102,7 +104,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
   });
-  console.log(resetPasswordToken);
+
   if (!user) {
     return next(new ErrorResponse(TOKEN_INVALID, 400));
   }
@@ -114,6 +116,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   await user.save();
 
   const token = user.signToken();
+
   res.status(codeEnum.SUCCESS).json({ token });
 });
 
@@ -121,7 +124,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/auth/resetpassword
 // @access    Public
 exports.resetPassword = asyncHandler(async (req, res, next) => {
-  // Get hashed token
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(req.params.reset - token)
@@ -131,18 +133,18 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
   });
-  console.log(resetPasswordToken);
+
   if (!user) {
     return next(new ErrorResponse(msgEnum.TOKEN_INVALID, 400));
   }
 
-  // Set new password
   user.password = req.body.password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
   await user.save();
 
   const token = user.signToken();
+
   res.status(codeEnum.SUCCESS).json({ token });
 });
 
@@ -158,10 +160,12 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   if (!checkMatch) {
     return next(new ErrorResponse(msgEnum.WRONG_PASSWORD, codeEnum.NOT_FOUND));
   }
+
   user.password = newPassword;
   await user.save();
 
   const token = user.signToken();
+
   res.status(codeEnum.SUCCESS).json({ token });
 });
 
@@ -173,10 +177,12 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     email: req.body.email,
     name: req.body.name,
   };
+
   const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
     new: true,
     runValidators: true,
   });
+
   res.status(codeEnum.SUCCESS).json({ data: user });
 });
 
@@ -193,7 +199,5 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.getToken = asyncHandler(async (req, res, next) => {
   const token = req.user.signToken();
-  console.log(token);
-
   res.status(codeEnum.SUCCESS).json({ token });
 });

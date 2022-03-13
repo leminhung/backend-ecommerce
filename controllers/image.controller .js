@@ -20,9 +20,11 @@ exports.getAllImages = asyncHandler(async (req, res, next) => {
 // @access    Private(Admin)
 exports.getImage = asyncHandler(async (req, res, next) => {
   const image = await Image.findById({ _id: req.params.imageId });
+
   if (!image) {
     return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
+
   res.status(codeEnum.SUCCESS).json({ data: image });
 });
 
@@ -31,6 +33,7 @@ exports.getImage = asyncHandler(async (req, res, next) => {
 // @access    Private(Admin)
 exports.deleteImage = asyncHandler(async (req, res, next) => {
   const image = await Image.findById(req.params.imageId);
+
   if (!image) {
     return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }

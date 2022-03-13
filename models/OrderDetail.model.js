@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const orderDetailSchema = mongoose.Schema({
+const orderDetailSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     min: [0, "Quantity must be at least 0"],

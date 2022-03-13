@@ -5,9 +5,9 @@ const colors = require("colors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fileupload = require("express-fileupload");
+
 const errorHandler = require("./middleware/error");
 
-// Load env vars
 dotenv.config({ path: "./config/.env" });
 
 const app = express();

@@ -9,7 +9,7 @@ const { msgEnum } = require("../enum/message.enum");
 
 // @desc      Get order details
 // @route     GET /api/v1/order-details
-// @access    Private
+// @access    Private(Admin)
 exports.getAllOrderDetails = asyncHandler(async (req, res, next) => {
   const detailProds = await OrderDetail.find().populate({
     path: "product order",
@@ -20,6 +20,7 @@ exports.getAllOrderDetails = asyncHandler(async (req, res, next) => {
       new ErrorResponse(msgEnum.PRODUCT_NOT_FOUND, codeEnum.NOT_FOUND)
     );
   }
+
   res.status(codeEnum.SUCCESS).json({ data: detailProds });
 });
 
@@ -30,12 +31,13 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
   let products = await req.cookies.PRODUCT_CART.products;
   let productIds = products.map((p) => p.productId);
 
-  Product.find({ _id: { $in: productIds } }, function (err, result) {
-    if (err) {
-      return next(new ErrorResponse(err.message, codeEnum.NOT_FOUND));
-    }
-    res
-      .status(codeEnum.SUCCESS)
-      .json({ data: result || [], total: req.cookies.PRODUCT_CART.total });
-  });
+  products = await Product.find({ _id: { $in: productIds } });
+
+  if (!products) {
+    return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
+  }
+
+  res
+    .status(codeEnum.SUCCESS)
+    .json({ data: products || [], total: req.cookies.PRODUCT_CART.total });
 });

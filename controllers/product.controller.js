@@ -21,9 +21,11 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.getProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findById({ _id: req.params.productId });
+
   if (!product) {
     return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
+
   res.status(codeEnum.SUCCESS).json({ data: product });
 });
 
@@ -32,7 +34,6 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 // @access    Private/Admin
 exports.createProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.create(req.body);
-
   res.status(codeEnum.CREATED).json({ data: product });
 });
 
@@ -41,11 +42,13 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 // @access    Private/Admin
 exports.deleteProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
+
   if (!product) {
     return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
 
   product.remove();
+
   res.status(code.SUCCESS).json({ data: {} });
 });
 
@@ -54,6 +57,7 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
 // @access    Private/Admin
 exports.updateProduct = asyncHandler(async (req, res, next) => {
   let product = await Product.findById(req.params.productId);
+
   if (!product) {
     return next(new ErrorResponse(msgEnum.NOT_FOUND, codeEnum.NOT_FOUND));
   }
@@ -73,6 +77,7 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.productId);
+
   if (!product) {
     return next(new ErrorResponse(msgEnum.DATA_NOT_FOUND, codeEnum.NOT_FOUND));
   }
@@ -83,14 +88,12 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
 
   const file = req.files.photo;
 
-  // make sure the image is a photo
   if (!file.mimetype.startsWith("image")) {
     return next(
       new ErrorResponse(msgEnum.WRONG_FILE_TYPE, codeEnum.BAD_REQUEST)
     );
   }
 
-  // Check filesize
   if (file.size > process.env.MAX_FILE_UPLOAD) {
     return next(
       new ErrorResponse(msgEnum.FILE_SIZE_OVER, codeEnum.BAD_REQUEST)
@@ -99,7 +102,7 @@ exports.productPhotoUpload = asyncHandler(async (req, res, next) => {
 
   cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
     await Image.create({
-      imagePath: result.url,
+      path: result.url,
       product: req.params.productId,
     });
     res.status(codeEnum.SUCCESS).json({ msg: msgEnum.UPLOAD_SUCCESS });
