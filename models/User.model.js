@@ -56,6 +56,7 @@ UserSchema.methods.isMatchPassword = async function (passwordEnter) {
 };
 
 UserSchema.methods.signToken = function () {
+  console.log(this);
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
