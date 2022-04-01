@@ -5,6 +5,7 @@ const colors = require("colors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const fileupload = require("express-fileupload");
+const cors = require("cors");
 
 const errorHandler = require("./middleware/error");
 
@@ -14,6 +15,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const connectDB = require("./config/db");
+
+app.use(cors());
 
 // Cookie parser
 app.use(cookieParser());
