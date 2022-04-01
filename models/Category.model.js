@@ -5,10 +5,10 @@ const categorySchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     slug: String,
-    description: {
-      type: String,
-      required: [true, "Bạn chưa nhập mô tả"],
-    },
+    // description: {
+    //   type: String,
+    //   required: [true, "Bạn chưa nhập mô tả"],
+    // },
     thumbnail: {
       type: String,
       default: "thumbnail.jpg",
