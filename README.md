@@ -18,7 +18,7 @@ $ npm start
 - Upload ảnh cho mỗi sản phẩm
 - Phân quyền Admin, User.
 - GET sản phẩm, phân trang.
-- Sửa, Xóa sản phẩm, thư mục.
+- Thêm, Sửa, Xóa sản phẩm, thư mục.
 - Giỏ hàng
 - Comment cho mỗi sản phẩm
 - ...
