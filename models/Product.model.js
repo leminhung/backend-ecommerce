@@ -19,6 +19,16 @@ const productSchema = new mongoose.Schema(
     },
     slug: String,
     description: String,
+    rating: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    numReviews: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     discount: { type: Number, min: [0, "Discount must be at least 0"] },
     category: {
       type: mongoose.Schema.ObjectId,

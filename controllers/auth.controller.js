@@ -49,6 +49,16 @@ exports.signIn = asyncHandler(async (req, res, next) => {
   res.status(codeEnum.SUCCESS).json({ token, refreshToken });
 });
 
+// @desc      SignOut user
+// @route     GET /api/v1/auth/logout
+// @access    Public
+exports.signOut = asyncHandler(async (req, res, next) => {
+  const token = undefined;
+  const refreshToken = undefined;
+
+  res.status(codeEnum.SUCCESS).json({ token, refreshToken });
+});
+
 // @desc      Forgot password
 // @route     GET /api/v1/auth/forgot
 // @access    Public
@@ -94,7 +104,6 @@ exports.forgot = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/auth/resetpassword
 // @access    Public
 exports.resetPassword = asyncHandler(async (req, res, next) => {
-  // Get hashed token
   const resetPasswordToken = crypto
     .createHash("sha256")
     .update(req.params.reset - token)

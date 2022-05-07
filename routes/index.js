@@ -5,6 +5,7 @@ const orderDetailRouter = require("./orderDetail.route");
 const categoryRouter = require("./category.route");
 const imageRouter = require("./image.route");
 const commentRouter = require("./comment.route");
+const stripeRouter = require("./stripe.route");
 
 const routers = [
   authRouter,
@@ -14,6 +15,7 @@ const routers = [
   categoryRouter,
   imageRouter,
   commentRouter,
+  stripeRouter,
 ];
 
 module.exports = (app) => {
