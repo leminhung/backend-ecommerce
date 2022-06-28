@@ -11,12 +11,21 @@ const { codeEnum } = require("../enum/status-code.enum");
 const { msgEnum } = require("../enum/message.enum");
 
 // @desc      Register user
-// @route     GET /api/v1/auth/register
+// @route     POST /api/v1/auth/register
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
-  const user = await User.create({ name, email, password, role });
+  if (!email || !password || !name) {
+    return next(new ErrorResponse(msgEnum.USER_NOT_FOUND, codeEnum.NOT_FOUND));
+  }
+
+  let user = await User.findOne({ email });
+
+  if (user)
+    return next(new ErrorResponse(msgEnum.USER_EXIST, codeEnum.BAD_REQUEST));
+
+  user = await User.create({ name, email, password });
 
   const token = user.signToken();
 
